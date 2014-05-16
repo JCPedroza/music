@@ -1,4 +1,11 @@
 # !!! Need more accurete floating points?
+# !!! The distance between two intervals is not linear!!! need to fix that in categorize()
+import sys
+
+class IntervalResult:
+    def __init__(self, name, value):
+        self.name  = name
+        self.value = value
 
 def generate_harmonics(root, depth):
     """
@@ -24,6 +31,9 @@ def generate_intervals(root):
     return results
 
 def categorize(root, depth):
+    """
+    Categorizes each harmonic to the closest interval.
+    """
     harmonics  = generate_harmonics(root, depth)
     intervals  = generate_intervals(root)
     results    = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -53,15 +63,29 @@ def categorize(root, depth):
 
     return results;
 
-def print_unordered_results(root, depth):
+def print_results(root, depth):
     interval_names = ["root          ", "minor second  ", "major second  ", "minor third   ", "major third   ", "fourth        ",  
         "tritone       ", "fifth         ", "minor sixth   ", "major sixth   ", "minor seventh ", "major seventh "]
     results = categorize(root, depth)
+    result_objects = []
+
+    print "\nUnordered results:"
     for i in range(len(results)):
         print interval_names[i], results[i]
+        result_objects.append(IntervalResult(interval_names[i], results[i]))
+    print ""
 
-print "55 11th harmonic: " , 55 * 11
-print_unordered_results(55, 11)
+    print "Ordered results:"
+    result_objects.sort(key = lambda x: x.value, reverse = True)
+    for i in result_objects:
+        print i.name, i.value
+    print ""
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print "usage: python harmonics.py <root frequency> <number of harmonics>"
+    else:
+        print_results(int(sys.argv[1]), int(sys.argv[2]))
 
 
 
