@@ -12,20 +12,45 @@ A  = 55.000000
 Bb = 58.270468
 B  = 61.735410
 
-# Dictionary <note name>: <frequency>
+# Dictionary of <note name>: <frequency>
 freqDic = {"C": C, "Db": Db, "D": D, "Eb": Eb, "E": E, "F": F,
         "Gb": Gb, "G": G, "Ab": Ab, "A": A, "Bb": Bb, "B": B}
+
+# Dictionary of <step>: <interval>
+intervals = ["root", "minor second", "major second", "minor third", "major third", "fourth",  
+        "tritone", "fifth", "minor sixth", "major sixth", "minor seventh", "major seventh"]
 
 # Array of note names
 noteNames = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
 
 def step_count(note1, note2):
+    """
+    Counts the number of steps between two notes.
+    """
     global noteNames
     count = noteNames.index(note2) - noteNames.index(note1)
     if count > 0:
         return count
     else:
         return count + len(noteNames)
+
+def step_to_interval(step):
+    """
+    Converts a step to an interval.
+    """
+    global intervals
+    return intervals[step]
+
+def generate_harmonics(root, depth):
+    """
+    Returns an array with <depth> harmonics of the root frequency.
+    The fundamental frequency (root) is considered the first harmonic.
+    """
+    harmonics = []
+    for i in range(depth):
+        harmonics.append(root * (i + 1))
+    return harmonics
+
 
 
 
