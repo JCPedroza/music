@@ -1,3 +1,5 @@
+# !!! Need more accurete floating points?
+
 # One octave of equal-temperament frequencies
 C  = 32.703194
 Db = 34.647827
@@ -22,6 +24,7 @@ intervals = ["root", "minor second", "major second", "minor third", "major third
 
 # Array of note names
 noteNames = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
+
 
 def step_count(note1, note2):
     """
@@ -51,6 +54,22 @@ def generate_harmonics(root, depth):
         harmonics.append(root * (i + 1))
     return harmonics
 
+def generate_intervals(root):
+    """
+    Generates the frequencies of the intervals of the root using
+    equal-temperament. 
+    """
+    ratio   = 2**(1/12.0)   # ratio in equal temperament
+    results = []
+    value   = root
+    for i in range(11):
+        value = value * ratio
+        results.append(value)
+    return results
 
+# def categorize(root, depth):
+#     harmonics = generate_harmonics(root, depth)
+#     results   = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+#     for i in harmonics:
 
-
+print generate_intervals(32.703194)
