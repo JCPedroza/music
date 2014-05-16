@@ -16,3 +16,16 @@ B  = 61.735410
 freqDic = {"C": C, "Db": Db, "D": D, "Eb": Eb, "E": E, "F": F,
         "Gb": Gb, "G": G, "Ab": Ab, "A": A, "Bb": Bb, "B": B}
 
+# Array of note names
+noteNames = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
+
+def step_count(note1, note2):
+    global noteNames
+    count = noteNames.index(note2) - noteNames.index(note1)
+    if count > 0:
+        return count
+    else:
+        return count + len(noteNames)
+
+
+
