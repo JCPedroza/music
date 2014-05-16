@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # !!! Need more accurete floating points?
 # !!! The distance between two intervals is not linear!!! need to fix that in categorize()
 import sys
@@ -13,7 +14,7 @@ def generate_harmonics(root, depth):
     The fundamental frequency (root) is considered the first harmonic.
     """
     harmonics = []
-    for i in range(depth):
+    for i in range(int(depth)):
         harmonics.append(root * (i + 1))
     return harmonics
 
@@ -82,10 +83,35 @@ def print_results(root, depth):
     print ""
 
 if __name__ == "__main__":
+    usage = "usage: python harmonics.py <root frequency> <number of harmonics>"
+
+    def is_number(s):
+        try:
+            float(s)
+            return True
+        except ValueError:
+            pass
+ 
+        try:
+            import unicodedata
+            unicodedata.numeric(s)
+            return True
+        except (TypeError, ValueError):
+            pass
+
+        return False
+
+    # Check for two command-line arguments.
     if len(sys.argv) != 3:
-        print "usage: python harmonics.py <root frequency> <number of harmonics>"
+        print usage
+    
+    # Check that command-line arguments are digits.
+    elif not is_number(sys.argv[1]) or not is_number(sys.argv[2]):
+        print usage
+
+    # If checks are passed, perform operations
     else:
-        print_results(int(sys.argv[1]), int(sys.argv[2]))
+        print_results(float(sys.argv[1]), float(sys.argv[2]))
 
 
 
