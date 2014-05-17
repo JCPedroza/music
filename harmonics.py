@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
-# !!! Need more accurete floating points?
+# !!! Need more accurete floating point numbers?
 # !!! The distance between two intervals is not linear!!! need to fix that in categorize()
 import sys
+import math
 
 class IntervalResult:
     def __init__(self, name, value):
         self.name  = name
         self.value = value
+
+def to_cents(note1, note2):
+    """
+    Returns the distance between two frequencies in cents.
+    """
+    return abs(1200 * math.log(note1/note2, 2))
 
 def generate_harmonics(root, depth):
     """
