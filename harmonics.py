@@ -6,7 +6,7 @@ class IntervalResult:
     """
     Represents the results for one interval.
     """
-    def __init__(self, name, value = 0, weightedValue = 0):
+    def __init__(self, name, value = 0.0, weightedValue = 0.0):
         self.name          = name
         self.value         = value
         self.weightedValue = weightedValue
