@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-# !!! Need more accurete floating point numbers?
-# !!! The distance between two intervals is not linear!!! need to fix that in categorize()
 import sys
 import math
 
 class IntervalResult:
-    def __init__(self, name, value):
-        self.name  = name
-        self.value = value
+    """
+    Represents the results for one interval.
+    """
+    def __init__(self, name, value = 0):
+        self.name          = name
+        self.value         = value
 
 def to_cents(note1, note2):
     """
@@ -44,7 +45,10 @@ def categorize(root, depth):
     """
     harmonics  = generate_harmonics(root, depth)
     intervals  = generate_intervals(root)
-    results    = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    results    = [IntervalResult("root          "), IntervalResult("minor second  "), IntervalResult("major second  "), 
+            IntervalResult("minor third   "), IntervalResult("major third   "), IntervalResult("fourth        "),
+            IntervalResult("tritone       "), IntervalResult("fifth         "), IntervalResult("minor sixth   "), 
+            IntervalResult("major sixth   "), IntervalResult("minor seventh "), IntervalResult("major seventh ")]
     last       = 0
     current    = 0
 
@@ -58,14 +62,13 @@ def categorize(root, depth):
         # Search for the closest interval
         for interval in range(len(intervals)):
             current = to_cents(harmonic, intervals[interval])
-            # current = harmonic - intervals[interval]                 
             if current < 0:                
                 current_difference = abs(current)
                 last_difference = abs(last)
                 if current_difference < last_difference:                                        
-                    results[interval] += 1
+                    results[interval].value += 1
                 else:                                        
-                    results[interval - 1] += 1                                
+                    results[interval - 1].value += 1                                
                 break
             else:
                 last = current
@@ -73,20 +76,16 @@ def categorize(root, depth):
     return results;
 
 def print_results(root, depth):
-    interval_names = ["root          ", "minor second  ", "major second  ", "minor third   ", "major third   ", "fourth        ",  
-        "tritone       ", "fifth         ", "minor sixth   ", "major sixth   ", "minor seventh ", "major seventh "]
     results = categorize(root, depth)
-    result_objects = []
 
     print "\nUnordered results:"
     for i in range(len(results)):
-        print interval_names[i], results[i]
-        result_objects.append(IntervalResult(interval_names[i], results[i]))
+        print results[i].name, results[i].value
     print ""
 
     print "Ordered results:"
-    result_objects.sort(key = lambda x: x.value, reverse = True)
-    for i in result_objects:
+    results.sort(key = lambda x: x.value, reverse = True)
+    for i in results:
         print i.name, i.value
     print ""
 
