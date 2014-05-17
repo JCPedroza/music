@@ -13,7 +13,7 @@ def to_cents(note1, note2):
     """
     Returns the distance between two frequencies in cents.
     """
-    return abs(1200 * math.log(note1/note2, 2))
+    return 1200 * math.log(note1/note2, 2)
 
 def generate_harmonics(root, depth):
     """
@@ -47,8 +47,6 @@ def categorize(root, depth):
     results    = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     last       = 0
     current    = 0
-    print "harmonics: ", harmonics
-    print "intervals: ", intervals
 
     for harmonic in harmonics:
         
@@ -59,7 +57,8 @@ def categorize(root, depth):
 
         # Search for the closest interval
         for interval in range(len(intervals)):
-            current = harmonic - intervals[interval]                     
+            current = to_cents(harmonic, intervals[interval])
+            # current = harmonic - intervals[interval]                 
             if current < 0:                
                 current_difference = abs(current)
                 last_difference = abs(last)
