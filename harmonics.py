@@ -27,8 +27,8 @@ def generate_harmonics(root, depth):
 
 def generate_intervals(root):
     """
-    Generates the frequencies of the intervals of the root using
-    equal-temperament. 
+    Generates the frequencies of the intervals of the root (including unison) using
+    12 tone equal temperament. 
     """
     ratio   = 2**(1/12.0)   # ratio in equal temperament
     results = [root]
@@ -47,12 +47,14 @@ def categorize(root, depth):
     results    = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     last       = 0
     current    = 0
+    print "harmonics: ", harmonics
+    print "intervals: ", intervals
 
     for harmonic in harmonics:
         
         # If the harmonic is out of range of the current octave, create a new list of 
         # intervals for the next octave.
-        if harmonic > intervals[-1]:
+        while harmonic > intervals[-1]:
             intervals = [n * 2 for n in intervals]
 
         # Search for the closest interval
@@ -112,7 +114,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         print usage
     
-    # Check that command-line arguments are digits.
+    # Check that command-line arguments are numbers.
     elif not is_number(sys.argv[1]) or not is_number(sys.argv[2]):
         print usage
 
