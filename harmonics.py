@@ -6,9 +6,10 @@ class IntervalResult:
     """
     Represents the results for one interval.
     """
-    def __init__(self, name, value = 0):
+    def __init__(self, name, value = 0, weightedValue = 0):
         self.name          = name
         self.value         = value
+        self.weightedValue = weightedValue
 
 def to_cents(note1, note2):
     """
@@ -42,33 +43,37 @@ def generate_intervals(root):
 def categorize(root, depth):
     """
     Categorizes each harmonic to the closest interval.
+    The weighted value is calculated using the harmonic's amplitude in a sawtooth wave:
+    http://hyperphysics.phy-astr.gsu.edu/hbase/audio/geowv.html
     """
     harmonics  = generate_harmonics(root, depth)
     intervals  = generate_intervals(root)
-    results    = [IntervalResult("root          "), IntervalResult("minor second  "), IntervalResult("major second  "), 
+    results    = [IntervalResult("root          "), IntervalResult("minor second  "), IntervalResult("major second  "),
             IntervalResult("minor third   "), IntervalResult("major third   "), IntervalResult("fourth        "),
-            IntervalResult("tritone       "), IntervalResult("fifth         "), IntervalResult("minor sixth   "), 
+            IntervalResult("tritone       "), IntervalResult("fifth         "), IntervalResult("minor sixth   "),
             IntervalResult("major sixth   "), IntervalResult("minor seventh "), IntervalResult("major seventh ")]
     last       = 0
     current    = 0
 
-    for harmonic in harmonics:
+    for harmonic in range(len(harmonics)):
         
-        # If the harmonic is out of range of the current octave, create a new list of 
+        # If the harmonic is out of range of the current octave, create a new list of
         # intervals for the next octave.
-        while harmonic > intervals[-1]:
+        while harmonics[harmonic] > intervals[-1]:
             intervals = [n * 2 for n in intervals]
 
         # Search for the closest interval
         for interval in range(len(intervals)):
-            current = to_cents(harmonic, intervals[interval])
-            if current < 0:                
+            current = to_cents(harmonics[harmonic], intervals[interval])
+            if current < 0:
                 current_difference = abs(current)
                 last_difference = abs(last)
-                if current_difference < last_difference:                                        
+                if current_difference < last_difference:                   
                     results[interval].value += 1
-                else:                                        
-                    results[interval - 1].value += 1                                
+                    results[interval].weightedValue += 1 / (harmonic + 1.0)
+                else:
+                    results[interval - 1].value += 1
+                    results[interval - 1].weightedValue += 1 / (harmonic + 1.0)
                 break
             else:
                 last = current
@@ -78,15 +83,21 @@ def categorize(root, depth):
 def print_results(root, depth):
     results = categorize(root, depth)
 
-    print "\nUnordered results:"
+    print "\n---- Results: ----\n"
     for i in range(len(results)):
-        print results[i].name, results[i].value
+        print results[i].name, results[i].value, results[i].weightedValue
     print ""
 
-    print "Ordered results:"
+    print "Ordered by total:"
     results.sort(key = lambda x: x.value, reverse = True)
     for i in results:
         print i.name, i.value
+    print ""
+
+    print "Ordered by weighted total:"
+    results.sort(key = lambda x: x.weightedValue, reverse = True)
+    for i in results:
+        print i.name, i.weightedValue
     print ""
 
 if __name__ == "__main__":
