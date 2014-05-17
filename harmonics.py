@@ -46,14 +46,17 @@ def categorize(root, depth):
     The weighted value is calculated using the harmonic's amplitude in a sawtooth wave:
     http://hyperphysics.phy-astr.gsu.edu/hbase/audio/geowv.html
     """
-    harmonics  = generate_harmonics(root, depth)
-    intervals  = generate_intervals(root)
-    results    = [IntervalResult("root          "), IntervalResult("minor second  "), IntervalResult("major second  "),
-            IntervalResult("minor third   "), IntervalResult("major third   "), IntervalResult("fourth        "),
-            IntervalResult("tritone       "), IntervalResult("fifth         "), IntervalResult("minor sixth   "),
-            IntervalResult("major sixth   "), IntervalResult("minor seventh "), IntervalResult("major seventh ")]
     last       = 0
     current    = 0
+    harmonics  = generate_harmonics(root, depth)
+    intervals  = generate_intervals(root)
+    results    = [
+            IntervalResult("root"),          IntervalResult("minor second"), 
+            IntervalResult("major second"),  IntervalResult("minor third"), 
+            IntervalResult("major third"),   IntervalResult("fourth"),
+            IntervalResult("tritone"),       IntervalResult("fifth"), 
+            IntervalResult("minor sixth"),   IntervalResult("major sixth"), 
+            IntervalResult("minor seventh"), IntervalResult("major seventh")]
 
     for harmonic in range(len(harmonics)):
         
@@ -81,23 +84,25 @@ def categorize(root, depth):
     return results;
 
 def print_results(root, depth):
-    results = categorize(root, depth)
+    results   = categorize(root, depth)
+    precision = 3
 
     print "\n---- Results: ----\n"
     for i in range(len(results)):
-        print results[i].name, results[i].value, results[i].weightedValue
+        print "{0:<13} {1:>5} {2:<5.{precision}}".format(results[i].name, results[i].value, 
+                results[i].weightedValue, precision=precision)
     print ""
 
     print "Ordered by total:"
     results.sort(key = lambda x: x.value, reverse = True)
     for i in results:
-        print i.name, i.value
+        print "{0:13} {1:>5}".format(i.name, i.value)
     print ""
 
     print "Ordered by weighted total:"
     results.sort(key = lambda x: x.weightedValue, reverse = True)
     for i in results:
-        print i.name, i.weightedValue
+        print "{0:{width}} {1:<5.{precision}}".format(i.name, i.weightedValue, width=15, precision=precision)
     print ""
 
 if __name__ == "__main__":
