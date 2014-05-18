@@ -22,10 +22,7 @@ def generate_harmonics(root, depth):
     Returns an array with <depth> harmonics of the root frequency.
     The fundamental frequency (root) is considered the first harmonic.
     """
-    harmonics = []
-    for i in range(int(depth)):
-        harmonics.append(root * (i + 1))
-    return harmonics
+    return [root * n for n in range(1, int(depth + 1))]
 
 def generate_intervals(root):
     """
