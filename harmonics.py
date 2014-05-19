@@ -29,13 +29,8 @@ def generate_intervals(root):
     Generates the frequencies of the intervals of the root (including unison) using
     12 tone equal temperament. 
     """
-    ratio   = 2**(1/12.0)   # ratio in equal temperament
-    results = [root]
-    value   = root
-    for i in range(11):
-        value = value * ratio
-        results.append(value)
-    return results
+    ratio   = 2**(1/12.0)   # ratio between semitones
+    return [root * ratio ** i for i in range(0,12)]
 
 def categorize(root, depth):
     """
