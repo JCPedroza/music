@@ -40,6 +40,7 @@ def categorize(root, depth):
     """
     last       = 0
     current    = 0
+    weight     = 1.0
     harmonics  = generate_harmonics(root, depth)
     intervals  = generate_intervals(root)
     results    = [
@@ -65,10 +66,10 @@ def categorize(root, depth):
                 last_difference = abs(last)
                 if current_difference < last_difference:                   
                     results[interval].value += 1
-                    results[interval].weightedValue += 1 / (harmonic + 1.0)
+                    results[interval].weightedValue += 1 / (harmonic + weight)
                 else:
                     results[interval - 1].value += 1
-                    results[interval - 1].weightedValue += 1 / (harmonic + 1.0)
+                    results[interval - 1].weightedValue += 1 / (harmonic + weight)
                 break
             else:
                 last = current
