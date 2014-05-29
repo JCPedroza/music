@@ -31,13 +31,18 @@ def generate_harmonics(root, depth):
     """
     return [root * n for n in range(1, int(depth + 1))]
 
-def generate_intervals(root):
+def generate_intervals(root, last_harmonic):
     """
     Generates the frequencies of the intervals of the root (including unison) using
     12 tone equal temperament. 
     """
-    ratio   = 2**(1/12.0)   # ratio between semitones
-    return [root * ratio ** i for i in range(0,12)]
+    ratio     = 2**(1/12.0)   # ratio between semitones
+    intervals =  [root * ratio ** i for i in range(0,12)]
+
+    while intervals[-1] < last_harmonic:
+        intervals.extend([interval * 2 for interval in intervals[-12:]])
+
+    return intervals
 
 def categorize(root, depth):
     """
@@ -49,7 +54,7 @@ def categorize(root, depth):
     current    = 0
     weight     = 1.0
     harmonics  = generate_harmonics(root, depth)
-    intervals  = generate_intervals(root)
+    intervals  = generate_intervals(root, harmonics[-1])
     results    = [
             IntervalResult("root"),          IntervalResult("minor second"), 
             IntervalResult("major second"),  IntervalResult("minor third"), 
@@ -60,41 +65,21 @@ def categorize(root, depth):
 
     for harmonic in range(len(harmonics)):
         
-        # If the harmonic is out of range of the current octave, create a new list of
-        # intervals for the next octave.
-        while harmonics[harmonic] > intervals[-1]:
-            print "\n interval array change !!! !!!" # DEBUG !!! !!!
-            print intervals # DEBUG !!! !!!
-            intervals = [n * 2 for n in intervals]
-            print intervals # DEBUG !!! !!!
-            print "\n\n" # DEBUG !!! !!!
-
         # Search for the closest interval
         for interval in range(len(intervals)):
             current = to_cents(harmonics[harmonic], intervals[interval])
             if current < 0:
+                interval_index = interval % 12
                 current_difference = abs(current)
                 last_difference = abs(last)
-
-                # DEBUG !!! !!!
-                print "harmonic: ", harmonic + 1, harmonics[harmonic]
-                print "current interval: ", intervals[interval]
-                print "last interval:    ", intervals[interval - 1]
-                print "current_difference: ", current_difference
-                print "last_difference:    ", last_difference
-                if intervals[interval] < intervals[interval - 1]:
-                    print intervals
-                print "\n"
-                # END OF DEBUG !!! !!!
-
                 if current_difference < last_difference:              
-                    results[interval].value += 1
-                    results[interval].weightedValue += 1 / (harmonic + weight)
-                    results[interval].differences.append(current_difference)
+                    results[interval_index].value += 1
+                    results[interval_index].weightedValue += 1 / (harmonic + weight)
+                    results[interval_index].differences.append(current_difference)
                 else:
-                    results[interval - 1].value += 1
-                    results[interval - 1].weightedValue += 1 / (harmonic + weight)
-                    results[interval - 1].differences.append(last_difference)
+                    results[interval_index - 1].value += 1
+                    results[interval_index - 1].weightedValue += 1 / (harmonic + weight)
+                    results[interval_index - 1].differences.append(last_difference)
                 break
             else:
                 last = current
