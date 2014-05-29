@@ -63,7 +63,11 @@ def categorize(root, depth):
         # If the harmonic is out of range of the current octave, create a new list of
         # intervals for the next octave.
         while harmonics[harmonic] > intervals[-1]:
+            print "\n interval array change !!! !!!" # DEBUG !!! !!!
+            print intervals # DEBUG !!! !!!
             intervals = [n * 2 for n in intervals]
+            print intervals # DEBUG !!! !!!
+            print "\n\n" # DEBUG !!! !!!
 
         # Search for the closest interval
         for interval in range(len(intervals)):
@@ -71,12 +75,26 @@ def categorize(root, depth):
             if current < 0:
                 current_difference = abs(current)
                 last_difference = abs(last)
-                if current_difference < last_difference:                   
+
+                # DEBUG !!! !!!
+                print "harmonic: ", harmonic + 1, harmonics[harmonic]
+                print "current interval: ", intervals[interval]
+                print "last interval:    ", intervals[interval - 1]
+                print "current_difference: ", current_difference
+                print "last_difference:    ", last_difference
+                if intervals[interval] < intervals[interval - 1]:
+                    print intervals
+                print "\n"
+                # END OF DEBUG !!! !!!
+
+                if current_difference < last_difference:              
                     results[interval].value += 1
                     results[interval].weightedValue += 1 / (harmonic + weight)
+                    results[interval].differences.append(current_difference)
                 else:
                     results[interval - 1].value += 1
                     results[interval - 1].weightedValue += 1 / (harmonic + weight)
+                    results[interval - 1].differences.append(last_difference)
                 break
             else:
                 last = current
@@ -91,15 +109,22 @@ def print_results(root, depth):
     for i in range(len(results)):
         print "{0:<13} {1:>5} {2:<5.{precision}}".format(results[i].name, results[i].value, 
                 results[i].weightedValue, precision=precision)
-    print ""
 
-    print "Ordered by total:"
+    print "\nDifferences:"
+    for i in range(len(results)):
+        print "{0:13}".format(results[i].name), ["{0:0.3f}".format(i) for i in results[i].differences]
+
+    print "\nAverage difference:"
+    for i in results:
+        print "{0:13} {1:0.3f}".format(i.name, i.average_difference())
+
+    print "\nOrdered by total:"
     results.sort(key = lambda x: x.value, reverse = True)
     for i in results:
         print "{0:13} {1:>5}".format(i.name, i.value)
-    print ""
 
-    print "Ordered by weighted total:"
+
+    print "\nOrdered by weighted total:"
     results.sort(key = lambda x: x.weightedValue, reverse = True)
     for i in results:
         print "{0:{width}} {1:<5.{precision}}".format(i.name, i.weightedValue, width=15, precision=precision)
