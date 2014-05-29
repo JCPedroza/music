@@ -10,6 +10,13 @@ class IntervalResult:
         self.name          = name
         self.value         = value
         self.weightedValue = weightedValue
+        self.differences   = []
+
+    def average_difference(self):
+        if len(self.differences) > 0:
+            return sum(self.differences) / float(len(self.differences))
+        else:
+            return False
 
 def to_cents(note1, note2):
     """
