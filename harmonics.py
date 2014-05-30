@@ -81,7 +81,7 @@ def categorize(root, depth):
     current    = 0
     weight     = 1.0
     harmonics  = generate_harmonics(root, depth)
-    intervals  = generate_intervals(root, harmonics[-1])
+    intervals  = generate_intervals_JI(root, harmonics[-1])
     results    = [
             IntervalResult("root"),          IntervalResult("minor second"), 
             IntervalResult("major second"),  IntervalResult("minor third"), 
@@ -99,7 +99,7 @@ def categorize(root, depth):
                 interval_index = interval % 12
                 current_difference = abs(current)
                 last_difference = abs(last)
-                assert sums_100(current_difference, last_difference)
+                # assert sums_100(current_difference, last_difference)
                 if current_difference < last_difference:
                     assert current_difference <= 50
                     results[interval_index].value += 1
