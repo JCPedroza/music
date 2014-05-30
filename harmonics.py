@@ -85,11 +85,13 @@ def categorize(root, depth):
                 current_difference = abs(current)
                 last_difference = abs(last)
                 assert sums_100(current_difference, last_difference)
-                if current_difference < last_difference:              
+                if current_difference < last_difference:
+                    assert current_difference <= 50
                     results[interval_index].value += 1
                     results[interval_index].weightedValue += 1 / (harmonic + weight)
                     results[interval_index].differences.append(current_difference)
                 else:
+                    assert last_difference <= 50
                     results[interval_index - 1].value += 1
                     results[interval_index - 1].weightedValue += 1 / (harmonic + weight)
                     results[interval_index - 1].differences.append(last_difference)
