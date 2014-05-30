@@ -41,13 +41,28 @@ def generate_harmonics(root, depth):
     """
     return [root * n for n in range(1, int(depth + 1))]
 
-def generate_intervals(root, last_harmonic):
+def generate_intervals(root, last_harmonic=0):
     """
     Generates the frequencies of the intervals of the root (including unison) using
     12 tone equal temperament. 
     """
     ratio     = 2**(1/12.0)   # ratio between semitones
     intervals =  [root * ratio ** i for i in range(0,12)]
+
+    while intervals[-1] < last_harmonic:
+        intervals.extend([interval * 2 for interval in intervals[-12:]])
+
+    return intervals
+
+def generate_intervals_JI(root, last_harmonic=0):
+    """
+    Genertes the frequencies of the intervals of the root (including unisong) using
+    Just Intonation Pythagorean Tuning
+    """
+    intervals = [root, root * (256/243.0), root * (9/8.0), root * (32/27.0), 
+                 root * (81/64.0), root * (4/3.0), root * (1024/729.0), 
+                 root * (3/2.0), root * (128/81.0), root * (27/16.0), 
+                 root * (16/9.0), root * (243/128.0)]
 
     while intervals[-1] < last_harmonic:
         intervals.extend([interval * 2 for interval in intervals[-12:]])
