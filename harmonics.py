@@ -18,6 +18,16 @@ class IntervalResult:
         else:
             return False
 
+def sums_100(n1, n2, a=0.1):
+    """
+    To check invariants. Checks if the sum of two numbers is close enough
+    to 100.
+    """
+    upper_limit = 100 + a
+    lower_limit = 100 - a
+    the_sum     = n1 + n2
+    return the_sum >= lower_limit and the_sum <= upper_limit
+
 def to_cents(note1, note2):
     """
     Returns the distance between two frequencies in cents.
@@ -44,6 +54,8 @@ def generate_intervals(root, last_harmonic):
 
     return intervals
 
+# !!! Can be optimized. Currently for each harmonic the loop iterates through the whole
+# interval array.
 def categorize(root, depth):
     """
     Categorizes each harmonic to the closest interval.
@@ -72,6 +84,7 @@ def categorize(root, depth):
                 interval_index = interval % 12
                 current_difference = abs(current)
                 last_difference = abs(last)
+                assert sums_100(current_difference, last_difference)
                 if current_difference < last_difference:              
                     results[interval_index].value += 1
                     results[interval_index].weightedValue += 1 / (harmonic + weight)
@@ -83,7 +96,6 @@ def categorize(root, depth):
                 break
             else:
                 last = current
-
     return results;
 
 def print_results(root, depth):
